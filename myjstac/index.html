@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyJSTac - Smart Autocounting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-blue-100 min-h-screen p-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-green-600 to-blue-800 rounded-xl shadow-lg p-8 mb-6 text-white">
+            <div class="flex items-center justify-between mb-6">
+                <!-- Logo di sebelah kiri -->
+                <div class="flex-shrink-0">
+                    <img id="logoImg" src="https://lh3.googleusercontent.com/d/1plGcrHFhx5vAI295fwd1RjP0_rp7dmb_" alt="MyJSTac Logo" class="w-32 h-32 object-contain" style="display: block;" onerror="tryAlternativeLogos(this)">
+                    <span id="logoFallback" class="text-8xl" style="display: none;">🎓</span>
+                </div>
+                
+                <!-- Tajuk dan subtajuk di tengah -->
+                <div class="flex-1 text-center">
+                    <h1 class="text-5xl font-bold tracking-wide mb-3">
+                        MyJSTac
+                    </h1>
+                    <p class="text-green-100 text-lg mb-2">Sistem Pengiraan Pintar</p>
+                    <p class="text-blue-200 text-sm">Pengiraan automatik tarikh mula dan tamat tugasan</p>
+                </div>
+                
+                <!-- Ruang kosong di sebelah kanan untuk keseimbangan -->
+                <div class="flex-shrink-0 w-32"></div>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">⚙️ Tetapan Asas</h2>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <!-- Tempoh Pelaksanaan -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Tempoh Pelaksanaan Pentaksiran Berterusan (hari)
+                    </label>
+                    <input type="number" id="tempohPelaksanaan" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Contoh: 42" min="1">
+                </div>
+                
+                <!-- Jumlah Tugasan -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Jumlah Tugasan
+                    </label>
+                    <input type="number" id="jumlahTugasan" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Contoh: 3" min="1" max="10">
+                </div>
+            </div>
+
+            <!-- Kumpulan Hari Kerja -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Kumpulan Hari Kerja
+                </label>
+                <select id="kumpulanHariKerja" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    <option value="">Pilih Kumpulan</option>
+                    <option value="A">Kumpulan A (Kedah, Kelantan dan Terengganu)</option>
+                    <option value="B">Kumpulan B (Negeri-negeri lain)</option>
+                </select>
+            </div>
+
+            <!-- Cuti Pertengahan Semester -->
+            <div class="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg mb-6 border border-green-200">
+                <h3 class="font-medium text-gray-800 mb-3">🏖️ Cuti Pertengahan Semester</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Mula Cuti</label>
+                        <input type="date" id="mulaCuti" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tamat Cuti</label>
+                        <input type="date" id="tamatCuti" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Popup Peringatan -->
+        <div id="warningModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 transform transition-all">
+                <div class="text-center">
+                    <div class="text-6xl mb-4">⚠️</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Tetapan Asas Belum Lengkap</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        Sila lengkapkan semua maklumat tetapan asas terlebih dahulu sebelum mengisi tugasan:
+                    </p>
+                    <div class="text-left bg-gray-50 rounded-lg p-4 mb-6">
+                        <ul class="space-y-2 text-sm text-gray-700">
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-red-400 rounded-full mr-3"></span>
+                                Tempoh Pelaksanaan Pentaksiran Berterusan
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-red-400 rounded-full mr-3"></span>
+                                Kumpulan Hari Kerja
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-red-400 rounded-full mr-3"></span>
+                                Tarikh Mula dan Tamat Cuti
+                            </li>
+                        </ul>
+                    </div>
+                    <button id="closeWarningModal" class="bg-gradient-to-r from-green-500 to-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:from-green-600 hover:to-blue-700 transition-all transform hover:scale-105">
+                        Faham, Saya Akan Lengkapkan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Peringatan Jam Pembelajaran -->
+        <div id="learningHoursWarning" class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6" style="display: none;">
+            <div class="flex items-center">
+                <div class="text-blue-600 text-xl mr-3">💡</div>
+                <div>
+                    <h4 class="font-medium text-blue-800 mb-1">Lengkapkan jam pembelajaran terlebih dahulu</h4>
+                    <p class="text-sm text-blue-700">Sila isi jam pembelajaran untuk semua tugasan sebelum memilih tarikh mula. Ini membantu sistem mengira tempoh masa dengan betul.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tugasan Section -->
+        <div id="tugasanSection" class="space-y-4">
+            <!-- Tugasan akan dijana secara dinamik -->
+        </div>
+
+        <!-- Jumlah Jam Pembelajaran -->
+        <div id="jumlahJamSection" class="bg-white rounded-xl shadow-lg p-6 mt-6 border-l-4 border-green-500" style="display: none;">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">📊 Ringkasan</h3>
+            <div class="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg">
+                <div class="text-center">
+                    <div class="text-sm text-gray-600 mb-1">Jumlah Jam Pembelajaran Pelajar</div>
+                    <div id="jumlahJamPelajar" class="text-3xl font-bold text-green-600">0 jam</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hakcipta -->
+        <div class="bg-gray-50 rounded-xl p-4 mt-8 text-center border-t-2 border-gray-200">
+            <p class="text-sm text-gray-600">
+                © 2025 MyJSTac-Hakcipta Terpelihara <span class="font-medium text-gray-800">Dr. Ahmadi & Dr. Norjanah</span>
+            </p>
+            <p class="text-xs text-gray-500 mt-1">IPGK Tawau</p>
+        </div>
+    </div>
+
+    <script>
+        let tugasanCount = 0;
+        const maxTugasan = 10;
+
+        // Inisialisasi
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+        });
+
+        // Fungsi untuk cuba format logo yang berbeza
+        function tryAlternativeLogos(img) {
+            const alternatives = [
+                'https://drive.google.com/uc?export=download&id=1plGcrHFhx5vAI295fwd1RjP0_rp7dmb_',
+                'https://docs.google.com/uc?export=download&id=1plGcrHFhx5vAI295fwd1RjP0_rp7dmb_',
+                'https://drive.google.com/thumbnail?id=1plGcrHFhx5vAI295fwd1RjP0_rp7dmb_&sz=w200'
+            ];
+            
+            let currentIndex = img.dataset.attemptIndex ? parseInt(img.dataset.attemptIndex) : 0;
+            
+            if (currentIndex < alternatives.length) {
+                img.dataset.attemptIndex = currentIndex + 1;
+                img.src = alternatives[currentIndex];
+            } else {
+                // Semua percubaan gagal, gunakan emoji
+                img.style.display = 'none';
+                document.getElementById('logoFallback').style.display = 'block';
+            }
+        }
+
+        function setupEventListeners() {
+            document.getElementById('tempohPelaksanaan').addEventListener('input', kiraSemuanya);
+            document.getElementById('jumlahTugasan').addEventListener('input', janaTugasan);
+            document.getElementById('mulaCuti').addEventListener('change', kiraSemuanya);
+            document.getElementById('tamatCuti').addEventListener('change', kiraSemuanya);
+            document.getElementById('kumpulanHariKerja').addEventListener('change', kiraSemuanya);
+            
+            // Event listener untuk tutup modal
+            document.getElementById('closeWarningModal').addEventListener('click', function() {
+                document.getElementById('warningModal').style.display = 'none';
+            });
+        }
+
+        function showWarningModal() {
+            document.getElementById('warningModal').style.display = 'flex';
+        }
+
+        function enableDisableTaskInputs(basicSettingsComplete) {
+            for (let i = 1; i <= tugasanCount; i++) {
+                const jamInput = document.getElementById(`jam${i}`);
+                const tarikhMulaInput = document.getElementById(`tarikhMula${i}`);
+                const statusEl = document.getElementById(`status${i}`);
+                
+                if (jamInput && tarikhMulaInput && statusEl) {
+                    if (basicSettingsComplete) {
+                        jamInput.disabled = false;
+                        tarikhMulaInput.disabled = false;
+                        jamInput.classList.remove('bg-gray-100', 'cursor-not-allowed');
+                        tarikhMulaInput.classList.remove('bg-gray-100', 'cursor-not-allowed');
+                        statusEl.textContent = 'Sedia untuk dikira';
+                        statusEl.className = 'font-medium text-gray-800';
+                    } else {
+                        jamInput.disabled = true;
+                        tarikhMulaInput.disabled = true;
+                        jamInput.classList.add('bg-gray-100', 'cursor-not-allowed');
+                        tarikhMulaInput.classList.add('bg-gray-100', 'cursor-not-allowed');
+                        statusEl.textContent = 'Tetapan asas belum lengkap';
+                        statusEl.className = 'font-medium text-red-600';
+                        
+                        // Clear values when disabled
+                        jamInput.value = '';
+                        tarikhMulaInput.value = '';
+                    }
+                }
+            }
+        }
+
+        function addTaskInputListeners() {
+            // Add event listeners with popup check
+            for (let i = 1; i <= tugasanCount; i++) {
+                const jamInput = document.getElementById(`jam${i}`);
+                const tarikhMulaInput = document.getElementById(`tarikhMula${i}`);
+                
+                if (jamInput) {
+                    jamInput.addEventListener('focus', function() {
+                        const basicSettingsComplete = checkBasicSettings();
+                        if (!basicSettingsComplete) {
+                            this.blur();
+                            showWarningModal();
+                        }
+                    });
+                    jamInput.addEventListener('input', kiraSemuanya);
+                }
+                
+                if (tarikhMulaInput) {
+                    tarikhMulaInput.addEventListener('focus', function() {
+                        const basicSettingsComplete = checkBasicSettings();
+                        if (!basicSettingsComplete) {
+                            this.blur();
+                            showWarningModal();
+                        }
+                    });
+                    tarikhMulaInput.addEventListener('change', kiraSemuanya);
+                }
+            }
+        }
+
+        function checkBasicSettings() {
+            const tempohPelaksanaan = parseFloat(document.getElementById('tempohPelaksanaan').value) || 0;
+            const kumpulanHariKerja = document.getElementById('kumpulanHariKerja').value;
+            const mulaCuti = document.getElementById('mulaCuti').value;
+            const tamatCuti = document.getElementById('tamatCuti').value;
+            
+            return tempohPelaksanaan && kumpulanHariKerja && mulaCuti && tamatCuti;
+        }
+
+
+
+        function showLearningHoursWarning(basicSettingsComplete) {
+            const warningEl = document.getElementById('learningHoursWarning');
+            if (warningEl) {
+                // Hanya tunjuk peringatan jam pembelajaran jika tetapan asas sudah lengkap
+                if (!basicSettingsComplete) {
+                    warningEl.style.display = 'none';
+                    return;
+                }
+                
+                let hasEmptyHours = false;
+                for (let i = 1; i <= tugasanCount; i++) {
+                    const jamInput = document.getElementById(`jam${i}`);
+                    if (jamInput && (!jamInput.value || parseFloat(jamInput.value) === 0)) {
+                        hasEmptyHours = true;
+                        break;
+                    }
+                }
+                warningEl.style.display = hasEmptyHours ? 'block' : 'none';
+            }
+        }
+
+        function janaTugasan() {
+            const jumlahTugasan = parseInt(document.getElementById('jumlahTugasan').value) || 0;
+            const container = document.getElementById('tugasanSection');
+            
+            // Clear existing tasks
+            container.innerHTML = '';
+            tugasanCount = 0;
+            
+            // Hide summary if no tasks
+            if (jumlahTugasan === 0) {
+                document.getElementById('jumlahJamSection').style.display = 'none';
+                return;
+            }
+            
+            // Generate tasks based on input
+            for (let i = 1; i <= Math.min(jumlahTugasan, maxTugasan); i++) {
+                tambahTugasan();
+            }
+            
+            // Show summary section
+            document.getElementById('jumlahJamSection').style.display = 'block';
+            kiraSemuanya();
+        }
+
+        function tambahTugasan() {
+            tugasanCount++;
+            const container = document.getElementById('tugasanSection');
+            
+            const tugasanDiv = document.createElement('div');
+            tugasanDiv.className = 'bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-600';
+            tugasanDiv.id = `tugasan${tugasanCount}`;
+            
+            tugasanDiv.innerHTML = `
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">📝 Tugasan ${tugasanCount}</h3>
+                </div>
+                
+                <div class="grid md:grid-cols-4 gap-4">
+                    <!-- Jam Pembelajaran -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Jam Pembelajaran</label>
+                        <input type="number" id="jam${tugasanCount}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="0" min="0" step="0.5" disabled>
+                    </div>
+                    
+                    <!-- Tempoh Masa Tugasan -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tempoh Masa (hari)</label>
+                        <div id="tempoh${tugasanCount}" class="w-full px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-blue-600 font-medium">-</div>
+                    </div>
+                    
+                    <!-- Tarikh Mula -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tarikh Mula</label>
+                        <input type="date" id="tarikhMula${tugasanCount}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" disabled>
+                    </div>
+                    
+                    <!-- Tarikh Hantar -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tarikh Hantar</label>
+                        <div id="tarikhTamat${tugasanCount}" class="w-full px-3 py-2 bg-green-50 border border-green-200 rounded-lg text-green-600 font-medium">-</div>
+                    </div>
+                </div>
+                
+                <!-- Progress Info -->
+                <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-600">Status:</span>
+                        <span id="status${tugasanCount}" class="font-medium text-red-600">Tetapan asas belum lengkap</span>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(tugasanDiv);
+            
+            // Check basic settings and enable/disable inputs
+            const basicSettingsComplete = checkBasicSettings();
+            enableDisableTaskInputs(basicSettingsComplete);
+            
+            // Add event listeners
+            addTaskInputListeners();
+        }
+
+        function kiraSemuanya() {
+            const mulaCuti = document.getElementById('mulaCuti').value;
+            const tamatCuti = document.getElementById('tamatCuti').value;
+            const tempohPelaksanaan = parseFloat(document.getElementById('tempohPelaksanaan').value) || 0;
+            const kumpulanHariKerja = document.getElementById('kumpulanHariKerja').value;
+            let jumlahJamKeseluruhan = 0;
+
+            // Periksa kelengkapan tetapan asas
+            const basicSettingsComplete = checkBasicSettings();
+            
+            // Enable/disable task inputs based on basic settings
+            enableDisableTaskInputs(basicSettingsComplete);
+            
+            // Tunjuk peringatan jam pembelajaran hanya jika tetapan asas lengkap
+            showLearningHoursWarning(basicSettingsComplete);
+
+            // Kira jumlah jam keseluruhan terlebih dahulu
+            for (let i = 1; i <= tugasanCount; i++) {
+                const jamInput = document.getElementById(`jam${i}`);
+                if (jamInput) {
+                    const jam = parseFloat(jamInput.value) || 0;
+                    jumlahJamKeseluruhan += jam;
+                }
+            }
+
+            // Kira untuk setiap tugasan secara berasingan
+            for (let i = 1; i <= tugasanCount; i++) {
+                const jamInput = document.getElementById(`jam${i}`);
+                const tarikhMulaInput = document.getElementById(`tarikhMula${i}`);
+                
+                if (jamInput && tarikhMulaInput) {
+                    const jam = parseFloat(jamInput.value) || 0;
+                    const tarikhMula = tarikhMulaInput.value;
+                    
+                    // Kira tempoh masa menggunakan rumus: jam pembelajaran / jumlah jam pembelajaran pelajar * tempoh pelaksanaan pentaksiran berterusan (hari)
+                    let tempohHari = 0;
+                    if (jam > 0 && jumlahJamKeseluruhan > 0 && tempohPelaksanaan > 0) {
+                        tempohHari = Math.round((jam / jumlahJamKeseluruhan) * tempohPelaksanaan);
+                    }
+                    
+                    // Update display tempoh masa
+                    const tempohEl = document.getElementById(`tempoh${i}`);
+                    if (tempohEl) {
+                        tempohEl.textContent = tempohHari > 0 ? `${tempohHari} hari` : '-';
+                    }
+                    
+                    if (jam > 0 && tempohHari > 0 && tarikhMula && kumpulanHariKerja) {
+                        // Kira tarikh tamat berdasarkan tempoh dan tarikh mula
+                        const tarikhTamat = kiraTarikhTamatTugasan(new Date(tarikhMula), tempohHari, mulaCuti, tamatCuti, kumpulanHariKerja);
+                        updateTugasanDisplay(i, tarikhTamat, 'Lengkap', tempohHari);
+                    } else {
+                        const statusMessage = !kumpulanHariKerja ? 'Sila pilih kumpulan hari kerja' : 'Sila lengkapkan maklumat';
+                        updateTugasanDisplay(i, null, statusMessage, tempohHari);
+                    }
+                }
+            }
+            
+            // Update jumlah jam pembelajaran pelajar
+            const jumlahJamPelajarEl = document.getElementById('jumlahJamPelajar');
+            if (jumlahJamPelajarEl) {
+                jumlahJamPelajarEl.textContent = `${jumlahJamKeseluruhan} jam`;
+            }
+        }
+
+        function updateTugasanDisplay(id, tarikhTamat, status, tempohHari) {
+            const options = { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric' 
+            };
+            
+            const tarikhTamatEl = document.getElementById(`tarikhTamat${id}`);
+            const statusEl = document.getElementById(`status${id}`);
+            
+            if (tarikhTamatEl) {
+                tarikhTamatEl.textContent = tarikhTamat ? tarikhTamat.toLocaleDateString('en-GB', options) : '-';
+            }
+            if (statusEl) {
+                statusEl.textContent = status;
+                statusEl.className = status === 'Lengkap' ? 'font-medium text-green-600' : 'font-medium text-blue-600';
+            }
+        }
+
+        function kiraTarikhTamatTugasan(tarikhMula, tempohHari, mulaCuti, tamatCuti, kumpulanHariKerja) {
+            const mula = new Date(tarikhMula);
+            let tarikhSemasa = new Date(mula);
+            let hariKerjaKira = 0;
+            
+            // Sediakan senarai hari cuti (jika ada)
+            const hariCuti = [];
+            if (mulaCuti && tamatCuti) {
+                const cutiMula = new Date(mulaCuti);
+                const cutiTamat = new Date(tamatCuti);
+                
+                for (let d = new Date(cutiMula); d <= cutiTamat; d.setDate(d.getDate() + 1)) {
+                    hariCuti.push(new Date(d).toDateString());
+                }
+            }
+            
+            // Tentukan hari cuti berdasarkan kumpulan
+            function adakahHariKerja(hariDalamMinggu) {
+                if (kumpulanHariKerja === 'A') {
+                    // Kumpulan A: Cuti Sabtu (6), Kerja Ahad (0) hingga Khamis (4)
+                    return hariDalamMinggu !== 6; // Bukan Sabtu
+                } else if (kumpulanHariKerja === 'B') {
+                    // Kumpulan B: Cuti Ahad (0), Kerja Isnin (1) hingga Jumaat (5)
+                    return hariDalamMinggu !== 0; // Bukan Ahad
+                }
+                return false;
+            }
+            
+            // Kira hari kerja berdasarkan kumpulan dan cuti
+            while (hariKerjaKira < tempohHari) {
+                const hariDalamMinggu = tarikhSemasa.getDay();
+                const adakahHariCutiPertengahan = hariCuti.includes(tarikhSemasa.toDateString());
+                
+                // Periksa jika hari ini adalah hari kerja dan bukan hari cuti pertengahan semester
+                if (adakahHariKerja(hariDalamMinggu) && !adakahHariCutiPertengahan) {
+                    hariKerjaKira++;
+                }
+                
+                // Jika belum cukup hari kerja, tambah satu hari
+                if (hariKerjaKira < tempohHari) {
+                    tarikhSemasa.setDate(tarikhSemasa.getDate() + 1);
+                }
+            }
+            
+            return tarikhSemasa;
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98ecd41b362f3c68',t:'MTc2MDUwNTIyMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

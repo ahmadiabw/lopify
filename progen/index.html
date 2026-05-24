@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROGEN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        textarea::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        textarea::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Smooth transition for label changes */
+        label span { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col items-center py-10 px-4">
+
+    <!-- Header (Updated with Logo) -->
+    <header class="text-center mb-10 max-w-2xl w-full flex justify-center">
+        <img src="https://github.com/ahmadiabw/genify/raw/main/Aset/GPages/PROgen.png" 
+             alt="PROgen Logo" 
+             class="h-54 md:h-64 w-auto object-contain transition-transform duration-300 hover:scale-105">
+        <!-- Keperluan: Icon, Heading, dan Paragraph asal telah dibuang -->
+        <div id="header-icon-bg" class="hidden"></div>
+        <i id="header-icon" class="hidden"></i>
+    </header>
+
+    <!-- Main Card -->
+    <main class="w-full max-w-3xl bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+        <div class="p-6 md:p-8 space-y-6">
+            
+            <!-- Step 1: Type Selector -->
+            <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100 mb-6 transition-all duration-300">
+                <label for="contentType" class="block text-base font-bold text-indigo-900 mb-2">
+                    <i class="fas fa-bullseye text-indigo-600 mr-2"></i>Langkah 1: Apa yang anda ingin hasilkan?
+                </label>
+                <div class="relative">
+                    <select id="contentType" onchange="handleTypeSelection()" 
+                        class="w-full px-4 py-3 rounded-lg border border-indigo-200 bg-white text-indigo-800 font-semibold focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition duration-200 appearance-none cursor-pointer">
+                        <option value="" disabled selected>-- Sila Pilih Jenis Kandungan --</option>
+                        <option value="slides">Slaid Pembentangan</option>
+                        <option value="website">Laman Web / Aplikasi</option>
+                        <option value="article">Penulisan Artikel / Esei</option>
+                        <option value="lesson">Rancangan Pengajaran (RPH)</option>
+                        <option value="module">Pembangunan Modul / Kurikulum</option>
+                        <option value="quiz">Kuiz / Soalan Ujian</option>
+                        <option value="inovasi">Inovasi PdP / Pendidikan</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-indigo-600">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Details Form (Hidden Initially) -->
+            <div id="step-2-container" class="hidden fade-in space-y-6">
+                
+                <div class="border-t border-slate-100 pt-6">
+                     <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="bg-slate-800 text-white rounded-full w-6 h-6 inline-flex items-center justify-center text-sm mr-2">2</span>
+                        Lengkapkan Maklumat Berikut
+                     </h3>
+                </div>
+
+                <!-- Grid Layout for Dynamic Inputs -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Field 1: Role -->
+                    <div class="space-y-2">
+                        <label id="label-role" for="role" class="block text-sm font-semibold text-slate-700">
+                            <i class="fas fa-user-tie text-blue-500 mr-2"></i><span>Peranan Anda</span>
+                        </label>
+                        <input type="text" id="role" 
+                            class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200"
+                            placeholder="Cth: Pensyarah Kanan">
+                    </div>
+
+                    <!-- Field 2: Subject/Context -->
+                    <div class="space-y-2">
+                        <label id="label-field2" for="field2" class="block text-sm font-semibold text-slate-700">
+                            <i class="fas fa-book text-blue-500 mr-2"></i><span>Subjek / Bidang</span>
+                        </label>
+                        <input type="text" id="field2" 
+                            class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200"
+                            placeholder="Cth: Sains Komputer">
+                    </div>
+
+                    <!-- Field 3: Topic (Modified to Textarea for larger input) -->
+                    <div class="space-y-2 md:col-span-2">
+                        <label id="label-topic" for="topic" class="block text-sm font-semibold text-slate-700">
+                            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i><span>Topik Utama</span>
+                        </label>
+                        <textarea id="topic" rows="5"
+                            class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 resize-y"
+                            placeholder="Cth: Kesan AI dalam Pendidikan (Boleh masukkan senarai atau huraian panjang di sini)"></textarea>
+                    </div>
+
+                    <!-- Field 4: Specs (Slides/Tech/Word Count) -->
+                    <div class="space-y-2">
+                        <label id="label-field4" for="field4" class="block text-sm font-semibold text-slate-700">
+                            <i id="icon-field4" class="fas fa-layer-group text-purple-500 mr-2"></i><span>Bilangan Slaid</span>
+                        </label>
+                        <input type="text" id="field4"
+                            class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200"
+                            placeholder="Cth: 10">
+                    </div>
+
+                    <!-- Field 5: Audience -->
+                    <div class="space-y-2">
+                        <label id="label-audience" for="audience" class="block text-sm font-semibold text-slate-700">
+                            <i class="fas fa-users text-green-500 mr-2"></i><span>Audiens Sasaran</span>
+                        </label>
+                        <input type="text" id="audience" 
+                            class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200"
+                            placeholder="Cth: Pelajar Universiti">
+                    </div>
+
+                    <!-- Extra Fields for Inovasi (Hidden by default) -->
+                    <div id="extra-inovasi-fields" class="hidden md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-slate-100 pt-4 mt-2">
+                        <div class="space-y-2">
+                            <label for="field6" class="block text-sm font-semibold text-slate-700">
+                                <i class="fas fa-medal text-yellow-500 mr-2"></i><span>Anugerah / Penerbitan (Jika ada)</span>
+                            </label>
+                            <input type="text" id="field6" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200" placeholder="Cth: Pingat emas inovasi">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="field7" class="block text-sm font-semibold text-slate-700">
+                                <i class="fas fa-handshake text-blue-500 mr-2"></i><span>Rakan Industri / Kolaborasi</span>
+                            </label>
+                            <input type="text" id="field7" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200" placeholder="Cth: Syarikat teknologi, NGO">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="field8" class="block text-sm font-semibold text-slate-700">
+                                <i class="fas fa-file-signature text-purple-500 mr-2"></i><span>Status Harta Intelek (IP)</span>
+                            </label>
+                            <input type="text" id="field8" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200" placeholder="Cth: Dalam permohonan, Tiada">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="field9" class="block text-sm font-semibold text-slate-700">
+                                <i class="fas fa-bullhorn text-red-500 mr-2"></i><span>Perkongsian / Pemasaran</span>
+                            </label>
+                            <input type="text" id="field9" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200" placeholder="Cth: Bengkel, Platform digital">
+                        </div>
+                        <div class="space-y-2 md:col-span-2">
+                            <label for="field10" class="block text-sm font-semibold text-slate-700">
+                                <i class="fas fa-chart-line text-green-500 mr-2"></i><span>Hasil / Impak Inovasi (Jika ada)</span>
+                            </label>
+                            <textarea id="field10" rows="3" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 resize-none" placeholder="Cth: Markah pemahaman murid meningkat sebanyak 20%, murid lebih fokus... (Biarkan kosong jika tiada data/masih peringkat awal)"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Custom Requirements -->
+                    <div class="space-y-2 md:col-span-2">
+                        <label for="custom" class="block text-sm font-semibold text-slate-700">
+                            <i class="fas fa-wand-magic-sparkles text-pink-500 mr-2"></i>Keperluan Tambahan
+                        </label>
+                        <textarea id="custom" rows="3"
+                            class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 resize-none"
+                            placeholder="Cth: Sertakan analogi mudah, gaya bahasa santai..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button onclick="generatePrompt()" 
+                    class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 rounded-xl shadow-lg transform transition hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-4 focus:ring-indigo-300 mt-4 flex items-center justify-center gap-2">
+                    <i class="fas fa-robot"></i>
+                    Bina Prompt Sekarang
+                </button>
+            </div>
+
+            <!-- Result Area -->
+            <div id="result-area" class="hidden fade-in mt-8 pt-8 border-t border-slate-100">
+                <div class="flex justify-between items-center mb-3">
+                    <label class="text-sm font-bold text-slate-700 uppercase tracking-wide">Hasil Prompt</label>
+                    <span class="text-xs text-slate-400 bg-slate-100 px-2 py-1 rounded">Sedia untuk ChatGPT / Gemini / Claude</span>
+                </div>
+                
+                <div class="relative group">
+                    <textarea id="final-prompt" readonly
+                        class="w-full h-48 p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-mono text-sm focus:outline-none resize-none"></textarea>
+                    
+                    <button id="copy-btn" onclick="copyPrompt()" 
+                        class="absolute top-3 right-3 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm transition flex items-center gap-2">
+                        <i class="fas fa-copy"></i> <span id="btn-text">Salin</span>
+                    </button>
+                </div>
+
+                <!-- Toast Notification -->
+                <div id="toast" class="hidden fixed bottom-5 right-5 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center gap-3 transition-opacity duration-300 z-50">
+                    <i class="fas fa-check-circle text-green-400"></i>
+                    <span>Teks berjaya disalin!</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    
+    <footer class="mt-8 text-center text-slate-400 text-sm">
+        <p>&copy; 2025 Hak Cipta Dr. Ahmadi</p>
+    </footer>
+
+    <script>
+        // Configuration for different content types
+        const formConfig = {
+            slides: {
+                labels: {
+                    role: "Peranan Anda",
+                    field2: "Subjek / Bidang",
+                    field4: "Bilangan Slaid",
+                    topic: "Topik Utama / Isi Kandungan",
+                    audience: "Audiens Sasaran"
+                },
+                placeholders: {
+                    role: "Cth: Pensyarah Kanan",
+                    field2: "Cth: Sains Komputer",
+                    field4: "Cth: 10",
+                    topic: "Cth: Revolusi Industri 4.0\n\nPoin Penting:\n1. Definisi\n2. Kesan\n3. Cabaran",
+                    audience: "Cth: Pelajar Tahun Akhir"
+                },
+                icon: "fa-presentation-screen",
+                color: "bg-blue-600"
+            },
+            website: {
+                labels: {
+                    role: "Peranan Pembangun (Role)",
+                    field2: "Industri / Niche",
+                    field4: "Teknologi (Tech Stack)",
+                    topic: "Nama Projek / Fungsi Utama",
+                    audience: "Pengguna Sasaran"
+                },
+                placeholders: {
+                    role: "Cth: Full Stack Developer",
+                    field2: "Cth: E-dagang Fesyen",
+                    field4: "Cth: HTML, Tailwind CSS, React",
+                    topic: "Cth: Sistem Jualan Online dengan ciri:\n- Troli Belanja\n- Pembayaran Selamat",
+                    audience: "Cth: Pembeli Gen-Z"
+                },
+                icon: "fa-laptop-code",
+                color: "bg-emerald-600"
+            },
+            article: {
+                labels: {
+                    role: "Peranan Penulis",
+                    field2: "Platform / Konteks",
+                    field4: "Anggaran Patah Perkataan",
+                    topic: "Tajuk / Poin Penting",
+                    audience: "Pembaca Sasaran"
+                },
+                placeholders: {
+                    role: "Cth: Copywriter Profesional",
+                    field2: "Cth: Blog Syarikat / LinkedIn",
+                    field4: "Cth: 500 - 800 patah perkataan",
+                    topic: "Cth: Tips Pengurusan Masa:\n- Teknik Pomodoro\n- Prioriti Tugas",
+                    audience: "Cth: Eksekutif Muda"
+                },
+                icon: "fa-newspaper",
+                color: "bg-orange-500"
+            },
+            lesson: {
+                labels: {
+                    role: "Guru / Pengajar",
+                    field2: "Mata Pelajaran",
+                    field4: "Tempoh Masa (Minit)",
+                    topic: "Standard Pembelajaran / Topik",
+                    audience: "Tahap Pelajar (Tingkatan/Umur)"
+                },
+                placeholders: {
+                    role: "Cth: Guru Cemerlang",
+                    field2: "Cth: Matematik Tambahan",
+                    field4: "Cth: 60 minit",
+                    topic: "Cth: Pembezaan (Differentiation)\n\nSub-topik:\n- Had dan Keselanjaran",
+                    audience: "Cth: Tingkatan 4 (Sederhana)"
+                },
+                icon: "fa-chalkboard-teacher",
+                color: "bg-rose-500"
+            },
+            module: {
+                labels: {
+                    role: "Pembangun Kurikulum",
+                    field2: "Subjek / Kursus",
+                    field4: "Bilangan Bab / Minggu",
+                    topic: "Tajuk Modul / Ringkasan Kandungan",
+                    audience: "Sasaran Pelajar"
+                },
+                placeholders: {
+                    role: "Cth: Pakar Kurikulum",
+                    field2: "Cth: Sains Data Asas",
+                    field4: "Cth: 5 Bab / 4 Minggu",
+                    topic: "Cth: Pengenalan kepada Python\n\nBab 1: Asas\nBab 2: Struktur Data",
+                    audience: "Cth: Pelajar Dewasa (Beginner)"
+                },
+                icon: "fa-book-open",
+                color: "bg-teal-600"
+            },
+            quiz: {
+                labels: {
+                    role: "Penggubal Soalan",
+                    field2: "Mata Pelajaran / Kursus",
+                    field4: "Bilangan & Jenis Soalan",
+                    topic: "Tajuk / Cakupan Topik",
+                    audience: "Tahap Pelajar (Tingkatan/Umur)"
+                },
+                placeholders: {
+                    role: "Cth: Guru Mata Pelajaran",
+                    field2: "Cth: Sejarah Tingkatan 3",
+                    field4: "Cth: 20 Soalan Objektif (MCQ)",
+                    topic: "Cth: Penentangan Masyarakat Tempatan\n\nFokus kepada:\n1. Dol Said\n2. Rentap",
+                    audience: "Cth: Pelajar Menengah Rendah (15 Tahun)"
+                },
+                icon: "fa-question-circle",
+                color: "bg-purple-600"
+            },
+            inovasi: {
+                labels: {
+                    role: "Nama Inovasi (Jika ada)",
+                    field2: "Jenis Inovasi",
+                    field4: "Subjek / Bidang",
+                    topic: "Isu / Refleksi PdP",
+                    audience: "Sasaran Pengguna"
+                },
+                placeholders: {
+                    role: "Cth: MathCatch App (Biarkan kosong jika tiada)",
+                    field2: "Cth: Digital, Modul, Gamifikasi, AI",
+                    field4: "Cth: Matematik, Sains",
+                    topic: "Cth: Murid sukar mengingat formula Trigonometri...\n(Masukkan isu sebenar)",
+                    audience: "Cth: Murid Tahun 5"
+                },
+                icon: "fa-lightbulb",
+                color: "bg-yellow-500"
+            }
+        };
+
+        function handleTypeSelection() {
+            const type = document.getElementById('contentType').value;
+            const step2Container = document.getElementById('step-2-container');
+            const extraInovasi = document.getElementById('extra-inovasi-fields');
+            const config = formConfig[type];
+
+            if (!type) return;
+
+            // Show Step 2 if hidden
+            if (step2Container.classList.contains('hidden')) {
+                step2Container.classList.remove('hidden');
+            }
+
+            // Toggle Inovasi extra fields
+            if (type === 'inovasi' && extraInovasi) {
+                extraInovasi.classList.remove('hidden');
+            } else if (extraInovasi) {
+                extraInovasi.classList.add('hidden');
+            }
+
+            // Update Labels
+            document.querySelector('#label-role span').innerText = config.labels.role;
+            document.querySelector('#label-field2 span').innerText = config.labels.field2;
+            document.querySelector('#label-field4 span').innerText = config.labels.field4;
+            document.querySelector('#label-topic span').innerText = config.labels.topic;
+            document.querySelector('#label-audience span').innerText = config.labels.audience;
+
+            // Update Placeholders
+            document.getElementById('role').placeholder = config.placeholders.role;
+            document.getElementById('field2').placeholder = config.placeholders.field2;
+            document.getElementById('field4').placeholder = config.placeholders.field4;
+            document.getElementById('topic').placeholder = config.placeholders.topic;
+            document.getElementById('audience').placeholder = config.placeholders.audience;
+
+            // Update specific icon for field 4
+            const field4Icon = document.getElementById('icon-field4');
+            if(type === 'website') field4Icon.className = "fas fa-code text-purple-500 mr-2";
+            else if(type === 'article') field4Icon.className = "fas fa-align-left text-purple-500 mr-2";
+            else if(type === 'lesson') field4Icon.className = "fas fa-clock text-purple-500 mr-2";
+            else if(type === 'module') field4Icon.className = "fas fa-list-ol text-purple-500 mr-2";
+            else if(type === 'quiz') field4Icon.className = "fas fa-list-check text-purple-500 mr-2";
+            else if(type === 'inovasi') field4Icon.className = "fas fa-book-open text-purple-500 mr-2";
+            else field4Icon.className = "fas fa-layer-group text-purple-500 mr-2";
+        }
+
+        function generatePrompt() {
+            const type = document.getElementById('contentType').value;
+            
+            // Get Inputs
+            const role = document.getElementById('role').value.trim() || (type === 'inovasi' ? "" : "[Peranan]");
+            const field2 = document.getElementById('field2').value.trim() || "[Konteks]";
+            const field4 = document.getElementById('field4').value.trim() || "[Spesifikasi]";
+            const topic = document.getElementById('topic').value.trim() || "[Topik]";
+            const audience = document.getElementById('audience').value.trim() || "[Audiens]";
+            const custom = document.getElementById('custom').value.trim() || "tiada keperluan tambahan";
+
+            // Extra fields for Inovasi
+            const field6 = document.getElementById('field6') ? document.getElementById('field6').value.trim() : "";
+            const field7 = document.getElementById('field7') ? document.getElementById('field7').value.trim() : "";
+            const field8 = document.getElementById('field8') ? document.getElementById('field8').value.trim() : "";
+            const field9 = document.getElementById('field9') ? document.getElementById('field9').value.trim() : "";
+            const field10 = document.getElementById('field10') ? document.getElementById('field10').value.trim() : "";
+
+            let promptTemplate = "";
+
+            if (type === 'slides') {
+                promptTemplate = `Bertindak sebagai seorang ${role} yang pakar dalam bidang ${field2}.
+Sila hasilkan struktur pembentangan slaid yang komprehensif sebanyak ${field4} slaid mengenai topik:
+"${topic}"
+
+Sasaran audiens adalah: ${audience}.
+
+Sila patuhi format berikut untuk setiap slaid:
+1. Tajuk Slaid
+2. Isi Kandungan Utama (bullet points)
+3. Cadangan Visual (prompt imej)
+4. Nota Penyampai
+
+Keperluan Tambahan: ${custom}.
+Sila pastikan nada profesional dan dalam Bahasa Melayu Standard.`;
+            } 
+            else if (type === 'website') {
+                promptTemplate = `Bertindak sebagai seorang ${role} (Pembangun Web). Saya ingin membina laman web untuk industri/niche: ${field2}.
+Topik/Projek utama adalah:
+"${topic}"
+
+Teknologi yang mesti digunakan: ${field4}.
+Sasaran pengguna laman web ini adalah: ${audience}.
+
+Sila sediakan:
+1. Struktur Laman Web (Sitemap)
+2. Kod lengkap (Single File HTML/Tailwind/JS) untuk laman utama (Landing Page).
+3. Cadangan palet warna dan tipografi.
+4. Fungsi-fungsi utama yang perlu ada.
+
+Keperluan Tambahan: ${custom}.
+Pastikan kod responsif, moden dan bersih.`;
+            }
+            else if (type === 'article') {
+                promptTemplate = `Bertindak sebagai seorang ${role}. Sila tulis satu artikel/esei untuk platform: ${field2}.
+Tajuk artikel / Fokus Utama:
+"${topic}"
+
+Sasaran pembaca: ${audience}.
+Panjang artikel: Sekitar ${field4}.
+
+Sila pastikan artikel mempunyai:
+1. Tajuk yang menarik (Clickbait/SEO friendly)
+2. Pengenalan yang memukau
+3. Isi-isi penting dengan sub-tajuk yang jelas
+4. Kesimpulan yang padu dengan Call-to-Action (CTA)
+
+Keperluan Tambahan: ${custom}.
+Gaya penulisan: Bahasa Melayu yang natural, menarik dan sesuai dengan audiens.`;
+            }
+            else if (type === 'lesson') {
+                promptTemplate = `Bertindak sebagai seorang ${role}. Bina satu Rancangan Pengajaran Harian (RPH) untuk subjek ${field2}.
+Topik Pembelajaran:
+"${topic}"
+
+Kelas/Sasaran Murid: ${audience}.
+Tempoh Masa: ${field4}.
+
+Sila sertakan:
+1. Objektif Pembelajaran (SMART)
+2. Aktiviti Set Induksi
+3. Aktiviti Utama (Langkah-langkah pengajaran)
+4. Penilaian / Pentaksiran
+5. Bahan Bantu Mengajar (BBM) yang diperlukan
+
+Keperluan Tambahan: ${custom}.
+Pastikan aktiviti berpusatkan murid dan menarik.`;
+            }
+            else if (type === 'module') {
+                promptTemplate = `Bertindak sebagai seorang ${role}. Bina satu struktur Modul Pembelajaran lengkap untuk subjek/kursus: ${field2}.
+Tajuk Modul / Ringkasan Kandungan:
+"${topic}"
+
+Sasaran Pelajar: ${audience}.
+Durasi/Skop: ${field4}.
+
+Sila sediakan rangka kerja modul yang merangkumi:
+1. Sinopsis Modul & Hasil Pembelajaran (Learning Outcomes)
+2. Senarai Topik/Bab mengikut urutan logik (Outline)
+3. Perincian kandungan bagi setiap bab (Isi-isi utama)
+4. Cadangan Aktiviti Pengukuhan / Latihan bagi setiap bab
+5. Kaedah Pentaksiran (Kuiz/Projek Akhir)
+
+Keperluan Tambahan: ${custom}.
+Pastikan modul ini tersusun, praktikal, dan sesuai dengan tahap audiens yang dinyatakan.`;
+            }
+            else if (type === 'quiz') {
+                promptTemplate = `Bertindak sebagai seorang ${role}. Saya memerlukan set soalan kuiz/ujian untuk mata pelajaran ${field2}.
+Topik/Cakupan Ujian:
+"${topic}"
+
+Sasaran Pelajar: ${audience}.
+Jumlah & Jenis Soalan: ${field4}.
+
+Sila hasilkan:
+1. Set soalan yang lengkap dan jelas.
+2. Skema jawapan penuh di bahagian akhir.
+3. Penjelasan ringkas untuk jawapan yang sukar (jika perlu).
+4. Cadangan masa menjawab untuk pelajar.
+
+Keperluan Tambahan: ${custom}.
+Pastikan soalan sesuai dengan tahap kognitif (Taksonomi Bloom) audiens sasaran.`;
+            }
+            else if (type === 'inovasi') {
+                let impakArahan = "";
+                if (field10) {
+                    impakArahan = `Huraikan impak positif inovasi berdasarkan maklumat berikut: "${field10}".`;
+                } else if (field6) {
+                    impakArahan = `Nyatakan bahawa impak inovasi telah terbukti melalui pengiktirafan dan anugerah yang diterima (${field6}), dan huraikan secara rasional potensi impak positif tersebut kepada sasaran pengguna.`;
+                } else {
+                    impakArahan = `Nyatakan bahawa inovasi ini masih di peringkat awal pembangunan dan impak yang jelas secara empirikal masih dalam proses pemerhatian atau penilaian.`;
+                }
+
+                promptTemplate = `Berdasarkan input di bawah, hasilkan penulisan perincian inovasi yang lengkap mengikut kriteria yang ditetapkan.
+
+MAKLUMAT INOVASI PENGGUNA:
+- Isu / Refleksi PdP:
+${topic}
+
+- Jenis Inovasi: ${field2}
+- Sasaran Pengguna: ${audience}
+- Subjek / Bidang: ${field4}
+- Nama Inovasi: ${role ? role : '[Mohon cadangkan 3 nama yang kreatif dan sesuai]'}
+- Anugerah / Penerbitan: ${field6 ? field6 : 'Tiada / Belum ada'}
+- Rakan Industri / Kolaborasi: ${field7 ? field7 : 'Tiada'}
+- Status Harta Intelek (IP): ${field8 ? field8 : 'Tiada'}
+- Perkongsian / Pemasaran: ${field9 ? field9 : 'Belum dilaksanakan'}
+- Hasil / Impak Input: ${field10 ? field10 : 'Belum ada rekod impak spesifik'}
+
+ARAHAN PENJANAAN:
+Berdasarkan maklumat di atas, hasilkan komponen berikut:
+
+1. Objektif Inovasi
+2. Metodologi / Kaedah Pelaksanaan
+3. Status Produk
+4. Keaslian Inovasi
+5. Manfaat Kepada Masyarakat
+6. Pengiktirafan & Jaringan
+7. Harta Intelek & Kebolehkomersialan
+8. Strategi Perkongsian & Pemasaran
+9. Cadangan Nama Inovasi (jika tidak diberi)
+10. Hasil & Impak Inovasi
+
+Keperluan Tambahan: ${custom}.`;
+            }
+
+            // Display
+            const resultArea = document.getElementById('result-area');
+            const textArea = document.getElementById('final-prompt');
+            textArea.value = promptTemplate;
+            resultArea.classList.remove('hidden');
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function copyPrompt() {
+            const textArea = document.getElementById('final-prompt');
+            const btnText = document.getElementById('btn-text');
+            const toast = document.getElementById('toast');
+            
+            textArea.select();
+            document.execCommand('copy');
+            
+            btnText.innerText = "Disalin!";
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                btnText.innerText = "Salin";
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

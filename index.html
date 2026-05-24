@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lopify — Platform Pemasaran Digital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0A0A0F;
+            color: #F0EEE8;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .orb1 { width: 500px; height: 500px; background: rgba(220,80,30,0.16); top: -120px; right: -80px; }
+        .orb2 { width: 350px; height: 350px; background: rgba(80,120,255,0.10); bottom: 40px; left: -100px; }
+        .orb3 { width: 250px; height: 250px; background: rgba(20,200,120,0.08); top: 55%; left: 42%; }
+
+        .inner {
+            position: relative;
+            z-index: 1;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2.8rem 2rem 4rem;
+        }
+
+        /* NAV */
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4rem;
+        }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-img-wrap {
+            width: 46px; height: 46px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #1A1A24;
+            border: 1px solid rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .logo-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
+        .logo-fallback {
+            font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
+            color: #E05020; display: none;
+        }
+        .brand-name {
+            font-family: 'Syne', sans-serif; font-size: 1.35rem;
+            font-weight: 800; letter-spacing: -0.5px; color: #F0EEE8;
+        }
+        .brand-name em { color: #E05020; font-style: normal; }
+        .nav-badge {
+            font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+            text-transform: uppercase; padding: 5px 14px; border-radius: 20px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+            color: rgba(240,238,232,0.5);
+        }
+
+        /* HERO */
+        .hero { text-align: center; padding: 0.5rem 0 3.5rem; }
+        .hero-kicker {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
+            text-transform: uppercase; color: #E05020; margin-bottom: 1.3rem;
+            padding: 6px 16px; border: 1px solid rgba(224,80,32,0.28);
+            border-radius: 20px; background: rgba(224,80,32,0.07);
+        }
+        .hero-kicker span {
+            width: 5px; height: 5px; border-radius: 50%;
+            background: #E05020; display: inline-block;
+        }
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.2rem, 6vw, 3.6rem);
+            font-weight: 800; line-height: 1.05; letter-spacing: -2px;
+            color: #F0EEE8; margin-bottom: 1.1rem;
+        }
+        h1 .hi { color: #E05020; }
+        .hero-sub {
+            font-size: 1rem; font-weight: 300; color: rgba(240,238,232,0.45);
+            max-width: 460px; margin: 0 auto; line-height: 1.75;
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.1rem;
+            margin-top: 3.5rem;
+        }
+
+        /* CARD */
+        .card {
+            display: block; text-decoration: none; color: inherit;
+            background: #111118;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 18px; overflow: hidden;
+            transition: transform 0.26s ease, border-color 0.26s ease, box-shadow 0.26s ease;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        /* LOGO AREA */
+        .card-logo {
+            width: 100%;
+            padding: 2rem 2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 180px;
+            overflow: hidden;
+        }
+        .card-logo img {
+            max-width: 100%;
+            max-height: 140px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        .card:hover .card-logo img { transform: scale(1.06); }
+
+        /* badge diletakkan atas logo */
+        .card-badge {
+            position: absolute;
+            top: 12px; left: 12px;
+            font-size: 0.62rem; font-weight: 700;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            padding: 4px 10px; border-radius: 20px;
+        }
+
+        /* divider */
+        .card-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.06);
+            margin: 0 1.2rem;
+        }
+
+        /* INFO */
+        .card-body { padding: 1.2rem 1.2rem 1.3rem; }
+        .app-name {
+            font-family: 'Syne', sans-serif; font-size: 1.05rem;
+            font-weight: 800; color: #F0EEE8; letter-spacing: -0.3px;
+            margin-bottom: 2px;
+        }
+        .app-tag {
+            font-size: 0.65rem; font-weight: 500;
+            letter-spacing: 0.07em; text-transform: uppercase;
+            opacity: 0.38; margin-bottom: 0.75rem;
+        }
+        .app-desc {
+            font-size: 0.82rem; font-weight: 300;
+            line-height: 1.65; color: rgba(240,238,232,0.42);
+            margin-bottom: 1.1rem;
+        }
+        .cta-link {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.8rem; font-weight: 600; color: #F0EEE8;
+            opacity: 0.6; transition: opacity 0.2s, gap 0.2s;
+        }
+        .card:hover .cta-link { opacity: 1; gap: 9px; }
+
+        /* per-card themes */
+        .card1 .card-logo { background: #16100C; }
+        .card1 .card-badge { background: rgba(224,80,32,0.18); color: #F08060; border: 1px solid rgba(224,80,32,0.22); }
+
+        .card2 .card-logo { background: #0C1018; }
+        .card2 .card-badge { background: rgba(60,100,240,0.18); color: #8AABFF; border: 1px solid rgba(60,100,240,0.22); }
+
+        .card3 .card-logo { background: #0A1410; }
+        .card3 .card-badge { background: rgba(20,180,100,0.18); color: #60E0A8; border: 1px solid rgba(20,180,100,0.22); }
+
+        /* FOOTER */
+        .footer {
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; margin-top: 3rem; font-size: 0.72rem;
+            color: rgba(240,238,232,0.18); letter-spacing: 0.06em; text-transform: uppercase;
+        }
+        .footer-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(240,238,232,0.18); }
+
+        @media (max-width: 480px) {
+            .nav-badge { display: none; }
+            .inner { padding: 1.8rem 1.2rem 3rem; }
+            h1 { letter-spacing: -1px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glow-orb orb1"></div>
+    <div class="glow-orb orb2"></div>
+    <div class="glow-orb orb3"></div>
+
+    <div class="inner">
+
+        <nav>
+            <div class="logo-area">
+                <div class="logo-img-wrap">
+                    <img src="aset/1.png" alt="Lopify"
+                         onerror="this.style.display='none'; document.querySelector('.logo-fallback').style.display='block'">
+                    <span class="logo-fallback">L</span>
+                </div>
+                <div class="brand-name">Lop<em>ify</em></div>
+            </div>
+            <div class="nav-badge">Digital Marketing Suite</div>
+        </nav>
+
+        <div class="hero">
+            <div class="hero-kicker"><span></span> Platform Pemasaran Digital</div>
+            <h1>Satu platform,<br><span class="hi">tiga kuasa</span> besar.</h1>
+            <p class="hero-sub">Pilih aplikasi yang sesuai untuk tingkatkan jenama anda — dari kreator kandungan hingga iklan pintar dan reka bentuk sosial.</p>
+        </div>
+
+        <div class="grid">
+
+            <!-- APLIKASI 1: tukar src kepada logo myjstac -->
+            <a href="./nova/index.html" class="card card1">
+                <div class="card-logo">
+                    <span class="card-badge">UGC Creators</span>
+                    <img src="aset/logoapps/MyJSTac.png" alt="myjstac logo"
+                         onerror="this.style.opacity='0'">
+                </div>
+                <div class="card-divider"></div>
+                <div class="card-body">
+                    <div class="app-name">myjstac</div>
+                    <div class="app-tag">UGC Creators</div>
+                    <p class="app-desc">Urus kreator kandungan UGC dan pantau prestasi kempen secara masa nyata.</p>
+                    <span class="cta-link">Buka aplikasi <i class="ti ti-arrow-right" aria-hidden="true"></i></span>
+                </div>
+            </a>
+
+            <!-- APLIKASI 2: tukar src kepada logo Boost -->
+            <a href="./progen/index.html" class="card card2">
+                <div class="card-logo">
+                    <span class="card-badge">Smart Ads</span>
+                    <img src="aset/logoapps/boost-logo.png" alt="Boost logo"
+                         onerror="this.style.opacity='0'">
+                </div>
+                <div class="card-divider"></div>
+                <div class="card-body">
+                    <div class="app-name">Boost</div>
+                    <div class="app-tag">Smart Ads</div>
+                    <p class="app-desc">Optimumkan iklan digital dengan sasaran tepat dan bajet yang efisien secara automatik.</p>
+                    <span class="cta-link">Buka aplikasi <i class="ti ti-arrow-right" aria-hidden="true"></i></span>
+                </div>
+            </a>
+
+            <!-- APLIKASI 3: tukar src kepada logo myics -->
+            <a href="./myics/index.html" class="card card3">
+                <div class="card-logo">
+                    <span class="card-badge">Social Design</span>
+                    <img src="aset/logoapps/cre8-logo.png" alt="myics logo"
+                         onerror="this.style.opacity='0'">
+                </div>
+                <div class="card-divider"></div>
+                <div class="card-body">
+                    <div class="app-name">myics</div>
+                    <div class="app-tag">Social Design</div>
+                    <p class="app-desc">Cipta visual media sosial yang konsisten dan profesional untuk setiap platform.</p>
+                    <span class="cta-link">Buka aplikasi <i class="ti ti-arrow-right" aria-hidden="true"></i></span>
+                </div>
+            </a>
+
+        </div>
+
+        <div class="footer">
+            <span>© 2025 Lopify</span>
+            <span class="footer-dot"></span>
+            <span>Semua hak terpelihara</span>
+        </div>
+
+    </div>
+
+</body>
+</html>

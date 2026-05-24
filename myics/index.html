@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="ms">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyICS - Penjana Kalendar</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Arial', 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 48px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .header p {
+            margin: 8px 0 0 0;
+            font-size: 16px;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin: 0 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3b82f6;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 0;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 14px;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="time"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: white;
+        }
+        
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        input[type="time"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-info {
+            background: #8b5cf6;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #7c3aed;
+        }
+        
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #d97706;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .activities-section {
+            display: none;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        .activity-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            min-width: 800px;
+        }
+        
+        .activity-table thead {
+            background: #f1f5f9;
+        }
+        
+        .activity-table th {
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: #475569;
+            border-bottom: 2px solid #cbd5e1;
+        }
+        
+        .activity-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+        
+        .activity-table tbody tr:hover {
+            background: #f8fafc;
+        }
+        
+        .activity-table input[type="text"],
+        .activity-table input[type="date"],
+        .activity-table input[type="time"] {
+            padding: 6px 10px;
+            font-size: 13px;
+        }
+        
+        .activity-table input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .activity-table .num-col {
+            text-align: center;
+            font-weight: 600;
+            color: #64748b;
+            width: 50px;
+        }
+        
+        .preview-section {
+            display: none;
+        }
+        
+        .preview-content {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .alert {
+            padding: 14px 18px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-weight: 500;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .header p {
+                font-size: 14px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <header class="header">
+   <h1 id="app-title">MyICS</h1>
+   <p id="app-subtitle">ICS Calendar Generator</p>
+  </header>
+  <main class="container">
+   <div class="card">
+    <h2 class="card-title">Pilihan 1: Input Manual</h2>
+    <div class="form-row">
+     <div class="form-group"><label for="department-name" id="department-label">Nama Jabatan / Unit:</label> <input type="text" id="department-name" placeholder="Contoh: Jabatan Sains Sosial">
+     </div>
+     <div class="form-group"><label for="activity-count">Bilangan Aktiviti:</label> <input type="number" id="activity-count" min="1" max="100" placeholder="Masukkan bilangan" style="color: #6b7280;">
+     </div>
+    </div><button class="btn btn-primary" id="generate-btn">JANA</button>
+    <div class="alert alert-success" id="alert-message"></div>
+   </div>
+   <div class="card">
+    <h2 class="card-title">Pilihan 2: Muat Naik Fail CSV</h2>
+    <div class="form-group"><label for="csv-file">Pilih Fail CSV atau Seret &amp; Lepas:</label>
+     <div id="drop-zone" style="padding: 40px 20px; border: 2px dashed #cbd5e1; border-radius: 8px; width: 100%; text-align: center; background: #f8fafc; cursor: pointer; transition: all 0.3s ease;">
+      <svg style="width: 48px; height: 48px; margin: 0 auto 15px; fill: #94a3b8;" viewbox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
+      </svg>
+      <p style="margin: 0; font-size: 16px; font-weight: 600; color: #475569;">Seret fail CSV ke sini</p>
+      <p style="margin: 8px 0 0 0; font-size: 14px; color: #94a3b8;">atau klik untuk memilih fail</p>
+     </div><input type="file" id="csv-file" accept=".csv" style="display: none;">
+     <p style="font-size: 12px; color: #64748b; margin-top: 12px;"><strong>Format CSV yang disokong:</strong><br>
+       • Susunan kolum: <strong>Nama Program, Lokasi, Tarikh Mula, Tarikh Tamat</strong><br>
+       • Format tarikh: <strong>DD/MM/YYYY</strong> (contoh: 15/03/2025) atau <strong>YYYY-MM-DD</strong> (contoh: 2025-03-15)<br>
+       • <em>Tip Excel:</em> Format sel tarikh sebagai <strong>Text</strong> atau gunakan format <strong>DD/MM/YYYY</strong> sebelum save sebagai CSV</p>
+    </div>
+    <div class="alert alert-success" id="csv-alert-message"></div>
+   </div>
+   <div class="activities-section" id="activities-section">
+    <div class="card">
+     <h2 class="card-title">Senarai Aktiviti</h2>
+     <div class="table-container">
+      <table class="activity-table">
+       <thead>
+        <tr>
+         <th class="num-col">Bil</th>
+         <th style="min-width: 200px;">Program/Aktiviti</th>
+         <th style="min-width: 150px;">Lokasi</th>
+         <th style="min-width: 140px;">Tarikh Mula</th>
+         <th style="min-width: 140px;">Tarikh Tamat</th>
+        </tr>
+       </thead>
+       <tbody id="activity-tbody">
+       </tbody>
+      </table>
+     </div>
+     <div class="button-group"><button class="btn btn-success" id="download-btn">MUAT TURUN .ICS</button> <button class="btn btn-info" id="preview-btn">PRATONTON</button> <button class="btn btn-warning" id="copy-btn">SALIN</button>
+     </div>
+    </div>
+   </div>
+   <div class="preview-section" id="preview-section">
+    <div class="card">
+     <h2 class="card-title">Pratonton Fail ICS</h2>
+     <pre class="preview-content" id="preview-content"></pre>
+    </div>
+   </div>
+  </main>
+  <footer class="footer">
+   <p>© 2025 MyICS - Hak Cipta Terpelihara Dr. Ahmadi</p>
+   <p>IPGK Tawau</p>
+  </footer>
+  <script>
+        const defaultConfig = {
+            app_title: "MyICS",
+            app_subtitle: "ICS Calendar Generator",
+            department_label: "Nama Jabatan / Unit",
+            generate_button: "JANA",
+            download_button: "MUAT TURUN .ICS",
+            preview_button: "PRATONTON",
+            copy_button: "SALIN"
+        };
+
+        let config = {};
+
+        async function onConfigChange(newConfig) {
+            config = newConfig;
+            
+            document.getElementById('app-title').textContent = config.app_title || defaultConfig.app_title;
+            document.getElementById('app-subtitle').textContent = config.app_subtitle || defaultConfig.app_subtitle;
+            document.getElementById('department-label').textContent = (config.department_label || defaultConfig.department_label) + ':';
+            document.getElementById('generate-btn').textContent = config.generate_button || defaultConfig.generate_button;
+            document.getElementById('download-btn').textContent = config.download_button || defaultConfig.download_button;
+            document.getElementById('preview-btn').textContent = config.preview_button || defaultConfig.preview_button;
+            document.getElementById('copy-btn').textContent = config.copy_button || defaultConfig.copy_button;
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["app_title", config.app_title || defaultConfig.app_title],
+                ["app_subtitle", config.app_subtitle || defaultConfig.app_subtitle],
+                ["department_label", config.department_label || defaultConfig.department_label],
+                ["generate_button", config.generate_button || defaultConfig.generate_button],
+                ["download_button", config.download_button || defaultConfig.download_button],
+                ["preview_button", config.preview_button || defaultConfig.preview_button],
+                ["copy_button", config.copy_button || defaultConfig.copy_button]
+            ]);
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+
+        document.getElementById('generate-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            generateActivityInputs();
+        });
+
+        document.getElementById('download-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            generateAndDownloadICS();
+        });
+
+        document.getElementById('preview-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            showPreview();
+        });
+
+        document.getElementById('copy-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            copyToClipboard();
+        });
+
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('csv-file');
+        
+        // Click to select file
+        dropZone.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        // File selected via input
+        fileInput.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                uploadAndProcessCSV();
+            }
+        });
+        
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        // Highlight drop zone when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, function() {
+                dropZone.style.borderColor = '#3b82f6';
+                dropZone.style.background = '#eff6ff';
+            });
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, function() {
+                dropZone.style.borderColor = '#cbd5e1';
+                dropZone.style.background = '#f8fafc';
+            });
+        });
+        
+        // Handle dropped files
+        dropZone.addEventListener('drop', function(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                fileInput.files = files;
+                uploadAndProcessCSV();
+            }
+        });
+
+        function generateActivityInputs() {
+            const count = parseInt(document.getElementById('activity-count').value);
+            
+            if (!count || count < 1) {
+                showAlert('Sila masukkan bilangan aktiviti yang sah (minimum 1)', 'error');
+                return;
+            }
+            
+            if (count > 100) {
+                showAlert('Bilangan aktiviti maksimum adalah 100', 'error');
+                return;
+            }
+            
+            const tbody = document.getElementById('activity-tbody');
+            tbody.innerHTML = '';
+            
+            for (let i = 1; i <= count; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="num-col">${i}</td>
+                    <td><input type="text" class="activity-name" placeholder="Nama program"></td>
+                    <td><input type="text" class="activity-location" placeholder="Lokasi"></td>
+                    <td><input type="date" class="activity-start-date"></td>
+                    <td><input type="date" class="activity-end-date"></td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            document.getElementById('activities-section').style.display = 'block';
+            document.getElementById('preview-section').style.display = 'none';
+            
+            showAlert(`${count} baris aktiviti berjaya dijana`, 'success');
+            
+            setTimeout(() => {
+                document.getElementById('activities-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        function escapeICSText(text) {
+            if (!text) return '';
+            return text.replace(/\\/g, '\\\\')
+                      .replace(/;/g, '\\;')
+                      .replace(/,/g, '\\,')
+                      .replace(/\n/g, '\\n')
+                      .replace(/\r/g, '');
+        }
+
+        function formatDateTimeForICS(date, time, isAllDay) {
+            if (isAllDay) {
+                return date.replace(/-/g, '');
+            }
+            const dateTime = `${date}T${time}:00`;
+            return dateTime.replace(/[-:]/g, '');
+        }
+
+        function generateUID() {
+            return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}@myics`;
+        }
+
+        function getCurrentDateTimeStamp() {
+            const now = new Date();
+            const year = now.getUTCFullYear();
+            const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(now.getUTCDate()).padStart(2, '0');
+            const hours = String(now.getUTCHours()).padStart(2, '0');
+            const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+            return `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
+        }
+
+        function generateICSContent() {
+            const departmentName = document.getElementById('department-name').value || 'Kalendar';
+            const rows = document.querySelectorAll('#activity-tbody tr');
+            
+            if (rows.length === 0) {
+                showAlert('Sila jana senarai aktiviti terlebih dahulu', 'error');
+                return null;
+            }
+            
+            let icsContent = 'BEGIN:VCALENDAR\r\n';
+            icsContent += 'VERSION:2.0\r\n';
+            icsContent += 'PRODID:-//MyICS Generator//MS\r\n';
+            icsContent += 'CALSCALE:GREGORIAN\r\n';
+            icsContent += `X-WR-CALNAME:${escapeICSText(departmentName)}\r\n`;
+            icsContent += 'X-WR-TIMEZONE:Asia/Kuala_Lumpur\r\n';
+            
+            let hasValidEvent = false;
+            
+            rows.forEach((row) => {
+                const name = row.querySelector('.activity-name').value;
+                const location = row.querySelector('.activity-location').value;
+                const startDate = row.querySelector('.activity-start-date').value;
+                const endDate = row.querySelector('.activity-end-date').value;
+                
+                if (!name || !startDate || !endDate) {
+                    return;
+                }
+                
+                hasValidEvent = true;
+                
+                icsContent += 'BEGIN:VEVENT\r\n';
+                icsContent += `UID:${generateUID()}\r\n`;
+                icsContent += `DTSTAMP:${getCurrentDateTimeStamp()}\r\n`;
+                icsContent += `SUMMARY:${escapeICSText(name)}\r\n`;
+                
+                if (location) {
+                    icsContent += `LOCATION:${escapeICSText(location)}\r\n`;
+                }
+                
+                const startDateFormatted = startDate.replace(/-/g, '');
+                const endDateObj = new Date(endDate);
+                endDateObj.setDate(endDateObj.getDate() + 1);
+                const endDateFormatted = endDateObj.toISOString().split('T')[0].replace(/-/g, '');
+                
+                icsContent += `DTSTART;VALUE=DATE:${startDateFormatted}\r\n`;
+                icsContent += `DTEND;VALUE=DATE:${endDateFormatted}\r\n`;
+                
+                icsContent += 'STATUS:CONFIRMED\r\n';
+                icsContent += 'SEQUENCE:0\r\n';
+                icsContent += 'END:VEVENT\r\n';
+            });
+            
+            if (!hasValidEvent) {
+                showAlert('Sila isi sekurang-kurangnya satu aktiviti dengan maklumat lengkap', 'error');
+                return null;
+            }
+            
+            icsContent += 'END:VCALENDAR\r\n';
+            
+            return icsContent;
+        }
+
+        function generateAndDownloadICS() {
+            const icsContent = generateICSContent();
+            
+            if (!icsContent) {
+                return;
+            }
+            
+            const departmentName = document.getElementById('department-name').value || 'Kalendar';
+            const fileName = `${departmentName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+            
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+            
+            showAlert(`Fail ${fileName} berjaya dimuat turun`, 'success');
+        }
+
+        function showPreview() {
+            const icsContent = generateICSContent();
+            
+            if (!icsContent) {
+                return;
+            }
+            
+            document.getElementById('preview-content').textContent = icsContent;
+            document.getElementById('preview-section').style.display = 'block';
+            
+            setTimeout(() => {
+                document.getElementById('preview-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        function copyToClipboard() {
+            const icsContent = generateICSContent();
+            
+            if (!icsContent) {
+                return;
+            }
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = icsContent;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showAlert('Kandungan ICS berjaya disalin ke papan klip', 'success');
+            } catch (err) {
+                showAlert('Gagal menyalin ke papan klip', 'error');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alert-message');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 4000);
+        }
+
+        function showCSVAlert(message, type) {
+            const alertDiv = document.getElementById('csv-alert-message');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 4000);
+        }
+
+        function parseDateToISO(dateStr) {
+            if (!dateStr) return '';
+            
+            dateStr = dateStr.trim();
+            
+            // Already in ISO format YYYY-MM-DD
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                return dateStr;
+            }
+            
+            // DD/MM/YYYY format
+            const ddmmyyyySlash = dateStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (ddmmyyyySlash) {
+                const day = ddmmyyyySlash[1].padStart(2, '0');
+                const month = ddmmyyyySlash[2].padStart(2, '0');
+                const year = ddmmyyyySlash[3];
+                return `${year}-${month}-${day}`;
+            }
+            
+            // DD-MM-YYYY format
+            const ddmmyyyyDash = dateStr.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+            if (ddmmyyyyDash) {
+                const day = ddmmyyyyDash[1].padStart(2, '0');
+                const month = ddmmyyyyDash[2].padStart(2, '0');
+                const year = ddmmyyyyDash[3];
+                return `${year}-${month}-${day}`;
+            }
+            
+            // DD.MM.YYYY format
+            const ddmmyyyyDot = dateStr.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+            if (ddmmyyyyDot) {
+                const day = ddmmyyyyDot[1].padStart(2, '0');
+                const month = ddmmyyyyDot[2].padStart(2, '0');
+                const year = ddmmyyyyDot[3];
+                return `${year}-${month}-${day}`;
+            }
+            
+            // YYYY/MM/DD format
+            const yyyymmddSlash = dateStr.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+            if (yyyymmddSlash) {
+                const year = yyyymmddSlash[1];
+                const month = yyyymmddSlash[2].padStart(2, '0');
+                const day = yyyymmddSlash[3].padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+            
+            // MM/DD/YYYY format (US format)
+            const mmddyyyySlash = dateStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (mmddyyyySlash) {
+                const month = mmddyyyySlash[1].padStart(2, '0');
+                const day = mmddyyyySlash[2].padStart(2, '0');
+                const year = mmddyyyySlash[3];
+                // Try to determine if it's DD/MM or MM/DD based on values
+                const monthNum = parseInt(mmddyyyySlash[1]);
+                const dayNum = parseInt(mmddyyyySlash[2]);
+                
+                // If first number > 12, it must be day
+                if (monthNum > 12) {
+                    return `${year}-${day}-${month}`;
+                }
+                // If second number > 12, first must be month
+                if (dayNum > 12) {
+                    return `${year}-${month}-${day}`;
+                }
+                // Ambiguous - assume DD/MM (common in Malaysia)
+                return `${year}-${day}-${month}`;
+            }
+            
+            return dateStr; // Return as-is if no pattern matches
+        }
+
+        function uploadAndProcessCSV() {
+            const fileInput = document.getElementById('csv-file');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showCSVAlert('Sila pilih fail CSV terlebih dahulu', 'error');
+                return;
+            }
+            
+            if (!file.name.endsWith('.csv')) {
+                showCSVAlert('Sila pilih fail dengan format .csv', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const csvContent = e.target.result;
+                    const lines = csvContent.split('\n').filter(line => line.trim());
+                    
+                    if (lines.length === 0) {
+                        showCSVAlert('Fail CSV kosong', 'error');
+                        return;
+                    }
+                    
+                    // Skip header if exists (optional)
+                    const startIndex = lines[0].toLowerCase().includes('program') || lines[0].toLowerCase().includes('aktiviti') ? 1 : 0;
+                    const dataLines = lines.slice(startIndex);
+                    
+                    if (dataLines.length === 0) {
+                        showCSVAlert('Tiada data dalam fail CSV', 'error');
+                        return;
+                    }
+                    
+                    const tbody = document.getElementById('activity-tbody');
+                    tbody.innerHTML = '';
+                    
+                    let validCount = 0;
+                    
+                    dataLines.forEach((line, index) => {
+                        // Handle CSV with possible quoted values
+                        const columns = parseCSVLine(line);
+                        
+                        if (columns.length < 4) {
+                            return; // Skip invalid rows
+                        }
+                        
+                        const [name, location, rawStartDate, rawEndDate] = columns;
+                        
+                        if (!name || !rawStartDate || !rawEndDate) {
+                            return; // Skip incomplete rows
+                        }
+                        
+                        // Convert dates to ISO format
+                        const startDate = parseDateToISO(rawStartDate);
+                        const endDate = parseDateToISO(rawEndDate);
+                        
+                        validCount++;
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="num-col">${validCount}</td>
+                            <td><input type="text" class="activity-name" placeholder="Nama program" value="${escapeHTML(name)}"></td>
+                            <td><input type="text" class="activity-location" placeholder="Lokasi" value="${escapeHTML(location)}"></td>
+                            <td><input type="date" class="activity-start-date" value="${startDate}"></td>
+                            <td><input type="date" class="activity-end-date" value="${endDate}"></td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                    
+                    if (validCount === 0) {
+                        showCSVAlert('Tiada data yang sah dalam fail CSV', 'error');
+                        return;
+                    }
+                    
+                    document.getElementById('activities-section').style.display = 'block';
+                    document.getElementById('preview-section').style.display = 'none';
+                    
+                    showCSVAlert(`${validCount} aktiviti berjaya diimport dari CSV`, 'success');
+                    
+                    setTimeout(() => {
+                        document.getElementById('activities-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                    
+                } catch (error) {
+                    showCSVAlert('Ralat membaca fail CSV. Sila pastikan format betul', 'error');
+                }
+            };
+            
+            reader.onerror = function() {
+                showCSVAlert('Ralat membaca fail CSV', 'error');
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current.trim());
+            return result;
+        }
+        
+        function escapeHTML(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        onConfigChange(defaultConfig);
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a4deccdf133f004',t:'MTc2NDIwNzcwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
