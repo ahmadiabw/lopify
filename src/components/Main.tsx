@@ -128,7 +128,7 @@ export default function Main() {
                 className={styles.logoImg}
                 onError={(e) => {
                   // Fallback logo if GitHub link fails or is slow
-                  e.currentTarget.src = 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/aset/logoapps/Logo%20Lopify-3d.png';
+                  e.currentTarget.src = 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/Logo%20Lopify-3d.png';
                 }}
               />
               <h2 className={styles.tagline}>
