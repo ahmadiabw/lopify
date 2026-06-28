@@ -18,7 +18,7 @@ const DEFAULT_APPS_CONFIG: AppConfig[] = [
   {
     id: 'pickandgo',
     name: 'Pick & Go',
-    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/Pick%20%26%20Go%20(2).png',
+    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/pick%20%26%20go%20(2).png',
     fallbackIcon: 'MapPin',
     url: APLIKASI_LINKS.pickAndGo,
     glowColor: 'rgba(59, 130, 246, 0.5)', // Blue
@@ -31,7 +31,7 @@ const DEFAULT_APPS_CONFIG: AppConfig[] = [
   {
     id: 'progen',
     name: 'PROgen',
-    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/pick%20%26%20go%20(2).png',
+    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/progen.png',
     fallbackIcon: 'Zap',
     url: APLIKASI_LINKS.proGen,
     glowColor: 'rgba(16, 185, 129, 0.5)', // Emerald
