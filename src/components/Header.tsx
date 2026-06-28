@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './Header.module.css';lopify
+import styles from './Header.module.css';
 import BackgroundMusic from '../audio/BackgroundMusic';
 import { Sparkles } from 'lucide-react';
 
