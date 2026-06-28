@@ -18,7 +18,7 @@ const DEFAULT_APPS_CONFIG: AppConfig[] = [
   {
     id: 'pickandgo',
     name: 'Pick & Go',
-    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/aset/logoapps/pick%20%26%20go%20(2).png',
+    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/pick%20%26%20go%20(2).png',
     fallbackIcon: 'MapPin',
     url: APLIKASI_LINKS.pickAndGo,
     glowColor: 'rgba(59, 130, 246, 0.5)', // Blue
@@ -31,7 +31,7 @@ const DEFAULT_APPS_CONFIG: AppConfig[] = [
   {
     id: 'progen',
     name: 'PROgen',
-    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/aset/logoapps/PROgen.png',
+    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/pick%20%26%20go%20(2).png',
     fallbackIcon: 'Zap',
     url: APLIKASI_LINKS.proGen,
     glowColor: 'rgba(16, 185, 129, 0.5)', // Emerald
@@ -44,7 +44,7 @@ const DEFAULT_APPS_CONFIG: AppConfig[] = [
   {
     id: 'myics',
     name: 'MyICS',
-    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/aset/logoapps/MyICS%20(1).png',
+    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/MyICS%20(1).png',
     fallbackIcon: 'Calendar',
     url: APLIKASI_LINKS.myIcs,
     glowColor: 'rgba(236, 72, 153, 0.5)', // Pink/Magenta
@@ -57,7 +57,7 @@ const DEFAULT_APPS_CONFIG: AppConfig[] = [
   {
     id: 'myjstac',
     name: 'MyJSTac',
-    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/aset/logoapps/MyJSTac%203.0.png',
+    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/asset/logoapps/MyJSTac%203.0.png',
     fallbackIcon: 'Cpu',
     url: APLIKASI_LINKS.myJsTac,
     glowColor: 'rgba(139, 92, 246, 0.5)', // Violet/Indigo
@@ -105,8 +105,8 @@ export function resetAppConfigs() {
 export const APPS_CONFIG = DEFAULT_APPS_CONFIG; // For static reference when needed
 
 export const GENERAL_CONFIG = {
-  logo3d: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/aset/logoapps/Logo%20Lopify-3d.png',
-  bgMusicUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/aset/3.%20Music/backround%20music-lopify.mp3',
+  logo3d: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/Logo%20Lopify-3d.png',
+  bgMusicUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/3.%20Music/backround%20music-lopify.mp3',
   title: 'LOPIFY',
   tagline: 'Navigate Anything, Without Limits',
   copyright: '© 2026. Hak Cipta Terpelihara Dr. Ahmadi.'
