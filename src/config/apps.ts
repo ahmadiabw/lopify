@@ -44,7 +44,7 @@ const DEFAULT_APPS_CONFIG: AppConfig[] = [
   {
     id: 'myics',
     name: 'MyICS',
-    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/MyIcs.png',
+    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/myics.png',
     fallbackIcon: 'Calendar',
     url: APLIKASI_LINKS.myIcs,
     glowColor: 'rgba(236, 72, 153, 0.5)', // Pink/Magenta
