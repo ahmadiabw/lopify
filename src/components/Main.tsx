@@ -32,7 +32,7 @@ export default function Main() {
 
   // Image load error handler
   const handleImageError = (id: string) => {
-    setImgLoadErrors(prev => ({ ...prev, [id]: true }));
+    setImgLoadErrors((prev: Record<string, boolean>) => ({ ...prev, [id]: true }));
   };
 
   // Handle clicking an application node
@@ -128,7 +128,7 @@ export default function Main() {
                 className={styles.logoImg}
                 onError={(e) => {
                   // Fallback logo if GitHub link fails or is slow
-                  e.currentTarget.src = 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/Logo%20Lopify-3d.png';
+                  e.currentTarget.src='https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/Logo%20Lopify-3d.png';
                 }}
               />
               <h2 className={styles.tagline}>

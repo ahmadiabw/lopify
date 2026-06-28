@@ -18,7 +18,7 @@ const DEFAULT_APPS_CONFIG: AppConfig[] = [
   {
     id: 'pickandgo',
     name: 'Pick & Go',
-    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/pick%20%26%20go%20(2).png',
+    logoUrl: '/assets/logoapps/Pick & Go (2).png', // pastikan ejaan nama fail di dalam folder assets anda adalah tepat
     fallbackIcon: 'MapPin',
     url: APLIKASI_LINKS.pickAndGo,
     glowColor: 'rgba(59, 130, 246, 0.5)', // Blue
@@ -44,7 +44,7 @@ const DEFAULT_APPS_CONFIG: AppConfig[] = [
   {
     id: 'myics',
     name: 'MyICS',
-    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/assets/logoapps/MyICS%20(1).png',
+    logoUrl: '/assets/logoapps/MyIcs.png',
     fallbackIcon: 'Calendar',
     url: APLIKASI_LINKS.myIcs,
     glowColor: 'rgba(236, 72, 153, 0.5)', // Pink/Magenta
@@ -57,7 +57,7 @@ const DEFAULT_APPS_CONFIG: AppConfig[] = [
   {
     id: 'myjstac',
     name: 'MyJSTac',
-    logoUrl: 'https://raw.githubusercontent.com/ahmadiabw/lopify/main/asset/logoapps/MyJSTac%203.0.png',
+    logoUrl: '/assets/logoapps/MyJSTac 3.0.png',
     fallbackIcon: 'Cpu',
     url: APLIKASI_LINKS.myJsTac,
     glowColor: 'rgba(139, 92, 246, 0.5)', // Violet/Indigo
